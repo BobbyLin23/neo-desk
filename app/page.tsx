@@ -1,5 +1,10 @@
-import { AuthScreen } from '@/features/auth/components/auth-screen'
+import { UserButton } from '@/features/auth/components/user-button'
 
 export default function Page() {
-  return <AuthScreen />
+  return (
+    <div className="p-2">
+      Hello World
+      <UserButton />
+    </div>
+  )
 }

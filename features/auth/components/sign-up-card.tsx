@@ -1,10 +1,12 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { FcGoogle } from 'react-icons/fc'
 import { FaGithub } from 'react-icons/fa'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { toast } from 'sonner'
 
 import {
   Card,
@@ -24,6 +26,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { authClient } from '@/lib/auth-client'
 
 import { SignInFlow } from '../types'
 
@@ -34,21 +37,45 @@ interface SignUpCardProps {
 const signUpSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
-  confirmPassword: z.string().min(8),
+  name: z.string().min(1),
 })
 
 export const SignUpCard = ({ setState }: SignUpCardProps) => {
+  const router = useRouter()
+
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       email: '',
       password: '',
-      confirmPassword: '',
+      name: '',
     },
   })
 
-  const onSubmit = (data: z.infer<typeof signUpSchema>) => {
-    console.log(data)
+  const onSubmit = async (formData: z.infer<typeof signUpSchema>) => {
+    const { data, error } = await authClient.signUp.email(
+      {
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+      },
+      {
+        onSuccess: () => {
+          router.push('/')
+        },
+        onError: (ctx) => {
+          toast.error(ctx.error.message)
+        },
+      }
+    )
+
+    if (error) {
+      toast.error(error.message)
+    }
+
+    if (data) {
+      toast.success('Account created successfully')
+    }
   }
 
   return (
@@ -62,6 +89,19 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
       <CardContent className="space-y-5 px-0 pb-0">
         <Form {...form}>
           <form className="space-y-2.5" onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Name" required />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="email"
@@ -98,24 +138,7 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Confirm Password"
-                      type="password"
-                      required
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
             <Button type="submit" className="w-full">
               Create account
             </Button>

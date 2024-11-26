@@ -26,6 +26,12 @@ import {
 } from '@/components/ui/form'
 
 import { SignInFlow } from '../types'
+import { authClient } from '@/lib/auth-client'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+import { useState } from 'react'
+import { Loader } from 'lucide-react'
+import { useSocialLogin } from '../hooks/use-social-login'
 
 interface SignInCardProps {
   setState: (state: SignInFlow) => void
@@ -37,6 +43,12 @@ const signInSchema = z.object({
 })
 
 export const SignInCard = ({ setState }: SignInCardProps) => {
+  const router = useRouter()
+
+  const [isLoading, setIsLoading] = useState(false)
+
+  const { handleSocialLogin } = useSocialLogin()
+
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -45,8 +57,24 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
     },
   })
 
-  const onSubmit = (data: z.infer<typeof signInSchema>) => {
-    console.log(data)
+  const onSubmit = async (data: z.infer<typeof signInSchema>) => {
+    setIsLoading(true)
+    await authClient.signIn.email(
+      {
+        email: data.email,
+        password: data.password,
+      },
+      {
+        onSuccess: () => {
+          toast.success('Logged in successfully')
+          router.push('/')
+        },
+        onError: (ctx) => {
+          toast.error(ctx.error.message)
+        },
+      }
+    )
+    setIsLoading(false)
   }
 
   return (
@@ -96,8 +124,8 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
-              Login
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? <Loader className="size-4 animate-spin" /> : 'Login'}
             </Button>
           </form>
         </Form>
@@ -108,6 +136,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
             variant="outline"
             size="lg"
             className="relative w-full"
+            onClick={() => handleSocialLogin('google')}
           >
             <FcGoogle className="absolute left-2.5 top-3 size-5" />
             Continue with Google
@@ -117,6 +146,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
             variant="outline"
             size="lg"
             className="relative w-full"
+            onClick={() => handleSocialLogin('github')}
           >
             <FaGithub className="absolute left-2.5 top-3 size-5" />
             Continue with Github
