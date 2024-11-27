@@ -34,11 +34,17 @@ interface SignUpCardProps {
   setState: (state: SignInFlow) => void
 }
 
-const signUpSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-  name: z.string().min(1),
-})
+const signUpSchema = z
+  .object({
+    email: z.string().email(),
+    password: z.string().min(8),
+    name: z.string().min(1),
+    confirmPassword: z.string().min(8),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  })
 
 export const SignUpCard = ({ setState }: SignUpCardProps) => {
   const router = useRouter()
@@ -49,11 +55,12 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
       email: '',
       password: '',
       name: '',
+      confirmPassword: '',
     },
   })
 
   const onSubmit = async (formData: z.infer<typeof signUpSchema>) => {
-    const { data, error } = await authClient.signUp.email(
+    await authClient.signUp.email(
       {
         email: formData.email,
         password: formData.password,
@@ -61,21 +68,14 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
       },
       {
         onSuccess: () => {
-          router.push('/')
+          router.push('/dashboard')
+          toast.success('Account created successfully')
         },
         onError: (ctx) => {
           toast.error(ctx.error.message)
         },
       }
     )
-
-    if (error) {
-      toast.error(error.message)
-    }
-
-    if (data) {
-      toast.success('Account created successfully')
-    }
   }
 
   return (
@@ -138,7 +138,24 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
                 </FormItem>
               )}
             />
-
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Confirm Password"
+                      type="password"
+                      required
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <Button type="submit" className="w-full">
               Create account
             </Button>

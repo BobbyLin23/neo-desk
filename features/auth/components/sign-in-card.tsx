@@ -67,7 +67,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
       {
         onSuccess: () => {
           toast.success('Logged in successfully')
-          router.push('/')
+          router.push('dashboard')
         },
         onError: (ctx) => {
           toast.error(ctx.error.message)

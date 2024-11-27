@@ -7,7 +7,7 @@ export const useSocialLogin = () => {
     await authClient.signIn.social(
       {
         provider,
-        callbackURL: '/',
+        callbackURL: '/dashboard',
       },
       {
         onError: (ctx) => {
