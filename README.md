@@ -1,13 +1,15 @@
 # Neo Desk
+
 Neo Desk is a AI-powered personal workspace.
 You can work with AI's colleagues in the office software like Slack or Lark.
 
 ## Features
+
 - Workspace
 - Chat
 - Task
 - Calendar
-- Document 
+- Document
 - AI Assistant
 
 ## Tech Stack
