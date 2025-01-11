@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { useAuth } from '@/hooks/use-auth'
 import { cn } from '@/lib/utils'
 
 type AuthCardProps = {
@@ -16,6 +17,8 @@ type AuthCardProps = {
 } & React.ComponentPropsWithoutRef<'div'>
 
 export const AuthCard = ({ children, className, ...props }: AuthCardProps) => {
+  const { handleSocialLogin, isLoading } = useAuth()
+
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
@@ -26,11 +29,21 @@ export const AuthCard = ({ children, className, ...props }: AuthCardProps) => {
         <CardContent>
           <div className="grid gap-6">
             <div className="flex flex-col gap-4">
-              <Button variant="outline" className="w-full">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => handleSocialLogin('github')}
+                disabled={isLoading}
+              >
                 <Icon name="mdi--github" className="mr-2 size-4" />
                 Login with Github
               </Button>
-              <Button variant="outline" className="w-full">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => handleSocialLogin('google')}
+                disabled={isLoading}
+              >
                 <Icon name="mdi--google" className="mr-2 size-4" />
                 Login with Google
               </Button>
