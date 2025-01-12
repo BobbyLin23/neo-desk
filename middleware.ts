@@ -1,12 +1,12 @@
-import { NextResponse, type NextRequest } from 'next/server'
 import { betterFetch } from '@better-fetch/fetch'
+import { NextResponse, type NextRequest } from 'next/server'
 
 import type { auth } from '@/lib/auth'
 
 type Session = typeof auth.$Infer.Session
 
 export default async function authMiddleware(request: NextRequest) {
-  const { data: session } = await betterFetch<Session | null>(
+  const { data: session } = await betterFetch<Session>(
     '/api/auth/get-session',
     {
       baseURL: request.nextUrl.origin,
@@ -16,16 +16,12 @@ export default async function authMiddleware(request: NextRequest) {
     },
   )
 
-  // 如果没有 session，直接重定向到登录页
   if (!session) {
-    const signInUrl = new URL('/sign-in', request.url)
-    signInUrl.searchParams.set('callbackUrl', request.url)
-    return NextResponse.redirect(signInUrl)
+    return NextResponse.redirect(new URL('/sign-in', request.url))
   }
-
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ['/workspace/:path*', '/settings/:path*', '/api/workspace/:path*'],
+  matcher: ['/workspace'],
 }
