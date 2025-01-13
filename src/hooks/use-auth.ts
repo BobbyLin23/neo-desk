@@ -7,7 +7,7 @@ import { authClient } from '@/lib/auth-client'
 export const useAuth = () => {
   const router = useRouter()
 
-  const { signIn, signOut } = authClient
+  const { signIn, signOut, useSession } = authClient
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -47,5 +47,5 @@ export const useAuth = () => {
     })
   }
 
-  return { handleSocialLogin, isLoading, handleLogout }
+  return { handleSocialLogin, isLoading, handleLogout, useSession }
 }

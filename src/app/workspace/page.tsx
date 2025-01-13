@@ -1,21 +1,19 @@
-import { UserButton } from '@/components/user-button'
-import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
+import { getWorkspaces } from '@/features/workspace/api/get-workspaces'
+import { auth } from '@/lib/auth'
+
 export default async function WorkspacePage() {
-  const data = await auth.api.getSession({
+  const session = await auth.api.getSession({
     headers: await headers(),
   })
 
-  if (!data?.session) {
-    return redirect('/sign-in')
-  }
+  const workspaces = await getWorkspaces(session?.user.id as string)
 
-  return (
-    <div>
-      Workspace
-      <UserButton />
-    </div>
-  )
+  if (!workspaces.length) {
+    return redirect('/workspace/create')
+  } else {
+    return redirect(`/workspace/${workspaces[0].id}`)
+  }
 }
