@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 
 import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
+import { QueryProvider } from '@/components/query-provider'
 
 const inter = Inter({
   variable: '--font-geist-sans',
@@ -23,7 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} antialiased`}>
         <Toaster />
-        {children}
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   )
