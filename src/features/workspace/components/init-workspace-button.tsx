@@ -1,23 +1,18 @@
 'use client'
 
-import { useEffect, useTransition } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import { initWorkspace } from '../api/init-workspace'
+import { initWorkspace } from '@/features/workspace/api/init-workspace'
 
 export function InitWorkspaceButton({ workspaceId }: { workspaceId: string }) {
-  const [isPending, startTransition] = useTransition()
-
-  useEffect(() => {
-    startTransition(async () => {
-      try {
-        await initWorkspace(workspaceId)
-      } catch (error) {
-        console.error('Init workspace failed:', error)
-      }
-    })
-  }, [])
+  const { isPending } = useQuery({
+    queryKey: ['init-workspace', workspaceId],
+    queryFn: () => initWorkspace(workspaceId),
+    retry: false,
+    staleTime: Infinity,
+  })
 
   return (
     isPending && (

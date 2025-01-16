@@ -9,7 +9,6 @@ import {
 import { sql } from 'drizzle-orm'
 
 import { user } from './auth-schema'
-import { profile } from './base'
 
 export const workspace = pgTable('workspace', {
   id: text('id')
@@ -92,7 +91,7 @@ export const chatMemberUser = pgTable('chat_member_user', {
     .references(() => chatMember.id, { onDelete: 'cascade' }),
   userId: text('user_id')
     .notNull()
-    .references(() => profile.id, { onDelete: 'cascade' }),
+    .references(() => user.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at')
     .notNull()
     .$defaultFn(() => new Date()),

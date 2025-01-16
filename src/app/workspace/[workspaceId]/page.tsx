@@ -8,11 +8,13 @@ export default async function WorkspacePage({
 }: {
   params: { workspaceId: string }
 }) {
-  const chats = await getChats(params.workspaceId)
+  const { workspaceId } = await params
+
+  const chats = await getChats(workspaceId)
 
   if (!chats.length) {
-    return <InitWorkspaceButton workspaceId={params.workspaceId} />
+    return <InitWorkspaceButton workspaceId={workspaceId} />
   }
 
-  return redirect(`/workspace/${params.workspaceId}/chat`)
+  return redirect(`/workspace/${workspaceId}/chat`)
 }

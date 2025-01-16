@@ -1,12 +1,18 @@
+'use client'
+
+import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
 import {
   Calendar,
-  Plus,
-  MessageCircle,
   FileText,
-  ListChecks,
   LayoutDashboard,
+  ListChecks,
+  MessageCircle,
+  Plus,
 } from 'lucide-react'
 
+import { cn } from '@/lib/utils'
+import { workspace as workspaceSchema } from '@/db/schema/workspace'
 import {
   Sidebar,
   SidebarContent,
@@ -21,8 +27,13 @@ import {
 import { UserButton } from '@/components/user-button'
 import { Button } from '@/components/ui/button'
 import { AppSearch } from './app-search'
+import { Hint } from '@/components/hint'
 
-export function AppSidebar({ workspaceId }: { workspaceId: string }) {
+export function AppSidebar({
+  workspace,
+}: {
+  workspace: typeof workspaceSchema.$inferSelect
+}) {
   const items = [
     {
       title: 'Dashboard',
@@ -31,7 +42,7 @@ export function AppSidebar({ workspaceId }: { workspaceId: string }) {
     },
     {
       title: 'Chat',
-      url: `/workspace/${workspaceId}/chat`,
+      url: `/workspace/${workspace.id}/chat`,
       icon: MessageCircle,
     },
     {
@@ -51,9 +62,36 @@ export function AppSidebar({ workspaceId }: { workspaceId: string }) {
     },
   ]
 
+  const [isNarrow, setIsNarrow] = useState(false)
+  const sidebarRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const observeWidth = () => {
+      const resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const width = entry.contentRect.width
+          setIsNarrow(width < 100)
+        }
+      })
+
+      if (sidebarRef.current) {
+        resizeObserver.observe(sidebarRef.current)
+      }
+
+      return () => resizeObserver.disconnect()
+    }
+
+    return observeWidth()
+  }, [])
+
   return (
-    <Sidebar>
-      <SidebarHeader className="flex flex-row items-center justify-between">
+    <Sidebar ref={sidebarRef}>
+      <SidebarHeader
+        className={cn(
+          'flex items-center',
+          isNarrow ? 'flex-col gap-2' : 'flex-row justify-between',
+        )}
+      >
         <UserButton />
         <Button variant="ghost" size="icon">
           <Plus />
@@ -61,20 +99,39 @@ export function AppSidebar({ workspaceId }: { workspaceId: string }) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Workspace Name</SidebarGroupLabel>
+          <SidebarGroupLabel>{workspace.name}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <>
-                <SidebarMenuItem className="my-2">
-                  <AppSearch />
+                <SidebarMenuItem
+                  className={cn('my-2', isNarrow ? 'flex justify-center' : '')}
+                >
+                  <AppSearch isNarrow={isNarrow} />
                 </SidebarMenuItem>
                 {items.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
-                      <a href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </a>
+                      <Link
+                        href={item.url}
+                        className={cn(
+                          'flex items-center',
+                          isNarrow
+                            ? 'h-fit flex-col justify-center gap-1'
+                            : 'flex-row gap-2',
+                        )}
+                      >
+                        <Hint label={isNarrow ? item.title : ''}>
+                          <div
+                            className={cn(
+                              isNarrow && 'flex-col',
+                              'flex items-center gap-2',
+                            )}
+                          >
+                            <item.icon className="size-4" />
+                            <span className="truncate">{item.title}</span>
+                          </div>
+                        </Hint>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
