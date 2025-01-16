@@ -1,10 +1,11 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { chat } from '@/db/schema/workspace'
 import { cn } from '@/lib/utils'
-import { useRouter } from 'next/navigation'
 
 export type ChatItem = typeof chat.$inferSelect & {
   lastMessage?: string
