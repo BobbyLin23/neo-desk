@@ -320,7 +320,7 @@ const Sidebar = React.forwardRef<
             data-sidebar="sidebar"
             className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
           >
-            <div className="relative h-full">
+            <div className="relative flex h-full flex-col">
               <div
                 className={cn(
                   'absolute inset-y-0 w-1 cursor-col-resize hover:bg-sidebar-border',
