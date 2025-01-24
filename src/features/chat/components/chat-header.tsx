@@ -6,6 +6,7 @@ import { ChatSearch } from './chat-search'
 import { AddMember } from './add-member'
 import { ChatMenu } from './chat-menu'
 import { getChat } from '../api/get-chat'
+import { Plus } from 'lucide-react'
 
 type ChatHeaderProps = {
   chat: Awaited<ReturnType<typeof getChat>>
@@ -24,9 +25,14 @@ export const ChatHeader = ({ chat }: ChatHeaderProps) => {
             <h3 className="text-sm font-medium">{chat?.name || ''}</h3>
             <ChatMember members={chat?.members || []} />
           </div>
-          <p className="text-xs text-muted-foreground">
-            {chat?.description || 'No description'}
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-xs text-muted-foreground">
+              {chat?.description || 'No description'}
+            </p>
+            <button className="flex items-center justify-center rounded-md p-1 text-muted-foreground hover:bg-primary/10 hover:text-primary">
+              <Plus className="size-3" />
+            </button>
+          </div>
         </div>
       </div>
       <div className="flex items-center gap-2">
