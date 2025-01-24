@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import {
   Calendar,
   FileText,
@@ -16,6 +17,7 @@ import { workspace as workspaceSchema } from '@/db/schema/workspace'
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -28,6 +30,7 @@ import { UserButton } from '@/components/user-button'
 import { Button } from '@/components/ui/button'
 import { AppSearch } from './app-search'
 import { Hint } from '@/components/hint'
+import { ModeToggle } from '@/components/mode-toggle'
 
 export function AppSidebar({
   workspace,
@@ -61,6 +64,8 @@ export function AppSidebar({
       icon: ListChecks,
     },
   ]
+
+  const pathname = usePathname()
 
   const [isNarrow, setIsNarrow] = useState(false)
   const sidebarRef = useRef<HTMLDivElement>(null)
@@ -97,7 +102,7 @@ export function AppSidebar({
           <Plus />
         </Button>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="flex-1">
         <SidebarGroup>
           <SidebarGroupLabel>{workspace.name}</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -118,6 +123,9 @@ export function AppSidebar({
                           isNarrow
                             ? 'h-fit flex-col justify-center gap-1'
                             : 'flex-row gap-2',
+                          item.title !== 'Dashboard' &&
+                            pathname.includes(item.url) &&
+                            'bg-muted-foreground/10',
                         )}
                       >
                         <Hint label={isNarrow ? item.title : ''}>
@@ -140,6 +148,9 @@ export function AppSidebar({
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <ModeToggle />
+      </SidebarFooter>
     </Sidebar>
   )
 }

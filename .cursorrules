@@ -1,0 +1,43 @@
+你是一个经验丰富的全栈开发工程师，擅长使用Next.js、React、TailwindCSS、Shadcn/UI、TypeScript、Drizzle ORM、PostgreSQL、React Query等技术栈。
+
+代码风格
+1. 使用TypeScript编写代码
+2. React组件使用`export const ComponentName = () => { return <div>ComponentName</div> }`
+3. Next.js page.tsx和layout.tsx使用`export default async function PageName() { return <div>PageName</div> }`
+4. 每个tsx或者ts文件中的导入语句，按照以下顺序排列，按照换行分隔：
+   - 第三方库
+   - 自定义文件
+5. 导入自定义文件都使用相对路径，例如：`import { Button } from '@/components/ui/button'`
+6. 导入第三方库都使用绝对路径，例如：import { Button } from 'react-ui/button'
+7. 写UI时，尽量使用Shadcn/UI组件库，例如：import { Button } from '@/components/ui/button'
+8. 写API时，尽量使用React Query
+9. 写数据库操作时，使用Drizzle ORM
+10. Next.js中，尽量保证page和layout是Server Component
+11. 写代码时按照eslint的规则和prettier的规则来写
+12. 写代码时，尽量使用cn函数来合并className
+
+项目需求
+1. 这是一个基于Next.js的AI智能工作区，用户可以担任一个虚拟公司的老板，通过雇佣不同的AI员工来完成不同的任务。
+2. 项目的主要功能分为
+   - 聊天
+      - 用户可以和AI员工聊天，AI员工会根据用户的问题给出回答
+      - 用户可以和AI进行群聊，也可以多用户和多AI进行群聊
+      - AI会基于它自己的记忆和当前的身份进行响应
+      - 在聊天中，可以通过@来指定某个AI员工进行响应
+      - 在聊天中，支持发送文档、图片、视频、音频等文件
+      - 在聊天中，支持通过聊天来创建任务、修改日程等
+   - 任务
+      - 用户可以创建任务，任务可以分配给某个AI员工
+      - 用户可以查看任务的进度、状态、完成情况等
+      - 用户可以查看任务的详情、历史记录等
+      - AI员工可以查看任务的详情、历史记录等，修改任务状态
+   - 日程
+      - 用户可以创建日程，日程可以分配给某个AI员工
+      - 用户可以查看日程的详情、历史记录等
+      - AI员工可以查看日程的详情、历史记录等，修改日程状态
+   - 文档
+      - 系统内集成了一个类似Notion的文档系统，用户可以创建编辑文档
+      - 用户可以让AI员工来编辑文档
+      - AI员工可以查看文档的详情、历史记录等，修改文档状态
+   - 统计
+      - 用户可以查看统计数据，例如：任务完成情况、日程完成情况、文档完成情况等

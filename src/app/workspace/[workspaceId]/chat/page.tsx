@@ -1,7 +1,8 @@
-import { Button } from '@/components/ui/button'
-import { getChats } from '@/features/chat/api/get-chats'
 import { MessageSquarePlus } from 'lucide-react'
 import { redirect } from 'next/navigation'
+
+import { Button } from '@/components/ui/button'
+import { getChats } from '@/features/chat/api/get-chats'
 
 export default async function ChatPage({
   params,
@@ -12,7 +13,7 @@ export default async function ChatPage({
 
   const chats = await getChats(workspaceId)
 
-  if (chats.length < 0) {
+  if (chats.length > 0) {
     return redirect(`/workspace/${workspaceId}/chat/${chats[0].id}`)
   }
 
